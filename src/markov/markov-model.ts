@@ -23,6 +23,7 @@ export class MarkovModel {
         let state = this.order.initialState()
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]
+            // TODO: this is gross. `transitions` really needs to be an object.
             ;(this.transitions[state.id()] ??= []).push(token)
             state.update(token)
         }
