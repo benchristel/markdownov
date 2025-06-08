@@ -4,9 +4,7 @@ import {tokenize} from "./tokenize.js"
 const EOT = ""
 
 export class MarkovModel {
-    private transitions: Record<string, string[]> = {
-        [EOT]: [],
-    }
+    private transitions: Record<string, string[]> = {}
 
     constructor(private rng: () => number) {}
 
@@ -24,14 +22,20 @@ export class MarkovModel {
 
     generate(): string {
         let generated = [EOT]
-        let last = EOT
+        // TODO: hardcoded order
+        let context = EOT
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
-            const next = pick(this.rng, this.transitions[last], EOT)
+            const next = this.predictFrom(context)
             generated.push(next)
             if (next === EOT) break
-            last = next
+            // TODO: hardcoded order
+            context = next
         }
         return generated.join("")
+    }
+
+    private predictFrom(context: string): string {
+        return pick(this.rng, this.transitions[context] ?? [EOT])
     }
 }

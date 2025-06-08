@@ -14,6 +14,6 @@ export function seedRandom(seed: string): () => number {
     }
 }
 
-export function pick<T>(rng: () => number, array: T[], defaultValue: T): T {
-    return array[Math.floor(rng() * array.length)] ?? defaultValue
+export function pick<T>(rng: () => number, array: T[]): T {
+    return array[Math.floor(rng() * array.length)]
 }
