@@ -3,6 +3,11 @@ import {tokenize} from "./tokenize.js"
 
 const END = ""
 
+export interface Order {
+    textBoundary(): typeof END[];
+    initialState(): State;
+}
+
 export interface State {
     id(): string;
     afterObserving(token: string): State;
@@ -11,7 +16,17 @@ export interface State {
     isEndOfText(): boolean;
 }
 
-class Order1 implements State {
+class Order1 implements Order {
+    textBoundary(): typeof END[] {
+        return [END]
+    }
+
+    initialState(): State {
+        return new Order1State()
+    }
+}
+
+class Order1State implements State {
     token = END
 
     id(): string {
@@ -26,7 +41,7 @@ class Order1 implements State {
     // TODO: this method doesn't interact with any instance variables.
     // Move to a new Order interface?
     empty(): State {
-        return new Order1()
+        return new Order1State()
     }
 
     // TODO: this method doesn't interact with any instance variables.
@@ -42,23 +57,20 @@ class Order1 implements State {
 
 export class MarkovModel {
     private readonly transitions: Record<string, string[] | undefined> = {}
-    private readonly initialState: State
 
     constructor(
         private readonly rng: () => number,
-        initialState = new Order1(),
-    ) {
-        this.initialState = initialState.empty()
-    }
+        private readonly order = new Order1(),
+    ) {}
 
     train(text: string) {
-        const textBoundary = this.initialState.textBoundary()
+        const textBoundary = this.order.textBoundary()
         const tokens = [
             ...textBoundary,
             ...tokenize(text),
             ...textBoundary,
         ]
-        let state = this.initialState
+        let state = this.order.initialState()
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]
             ;(this.transitions[state.id()] ??= []).push(token)
@@ -67,8 +79,8 @@ export class MarkovModel {
     }
 
     generate(): string {
-        let generated: string[] = this.initialState.textBoundary()
-        let state = this.initialState
+        let generated: string[] = this.order.textBoundary()
+        let state = this.order.initialState()
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
             const next = this.predictFrom(state)
