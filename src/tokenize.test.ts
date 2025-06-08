@@ -52,6 +52,11 @@ test("tokenize", {
         expect(tokens, equals, ["¿", "Cómo ", "estás?"])
     },
 
+    "allows combining accents as part of a word"() {
+        const tokens = [...tokenize("¿Co\u0301mo esta\u0301s?")]
+        expect(tokens, equals, ["¿", "Co\u0301mo ", "esta\u0301s?"])
+    },
+
     "treats numbers as words"() {
         const tokens = [...tokenize("99.0g")]
         expect(tokens, equals, ["99.", "0g"])
