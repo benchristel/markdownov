@@ -46,4 +46,24 @@ test("tokenize", {
         const tokens = [...tokenize(" *_-#>`=")]
         expect(tokens, equals, [" *_-#>`="])
     },
+
+    "allows accented letters as part of a word"() {
+        const tokens = [...tokenize("¿Cómo estás?")]
+        expect(tokens, equals, ["¿", "Cómo ", "estás?"])
+    },
+
+    "treats numbers as words"() {
+        const tokens = [...tokenize("99.0g")]
+        expect(tokens, equals, ["99.", "0g"])
+    },
+
+    "treats Chinese characters as words"() {
+        const tokens = [...tokenize("你好 世界")]
+        expect(tokens, equals, ["你好 ", "世界"])
+    },
+
+    "treats emoji as space"() {
+        const tokens = [...tokenize("🙊 🙊")]
+        expect(tokens, equals, ["🙊 🙊"])
+    },
 })

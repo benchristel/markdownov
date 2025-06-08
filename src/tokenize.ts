@@ -1,4 +1,4 @@
-const tokenRegex = /^[a-zA-Z0-9]*[^a-zA-Z0-9]*/
+const tokenRegex = /^[0-9\p{L}]*[^0-9\p{L}]*/u
 
 export function *tokenize(text: string): Generator<string> {
     let token: string | undefined
