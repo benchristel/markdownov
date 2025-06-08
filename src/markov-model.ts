@@ -1,7 +1,7 @@
 import {pick} from "./random.js"
 import {tokenize} from "./tokenize.js"
 
-const EOT = ""
+const END = ""
 
 export class MarkovModel {
     private transitions: Record<string, string[]> = {}
@@ -10,7 +10,7 @@ export class MarkovModel {
 
     train(text: string) {
         // TODO: hardcoded order
-        const tokens = [EOT, ...tokenize(text), EOT]
+        const tokens = [END, ...tokenize(text), END]
         // TODO: hardcoded order
         for (let i = 1; i < tokens.length; i++) {
             const token = tokens[i]
@@ -21,14 +21,14 @@ export class MarkovModel {
     }
 
     generate(): string {
-        let generated = [EOT]
+        let generated = [END]
         // TODO: hardcoded order
-        let context = EOT
+        let context = END
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
             const next = this.predictFrom(context)
             generated.push(next)
-            if (next === EOT) break
+            if (next === END) break
             // TODO: hardcoded order
             context = next
         }
@@ -36,6 +36,6 @@ export class MarkovModel {
     }
 
     private predictFrom(context: string): string {
-        return pick(this.rng, this.transitions[context] ?? [EOT])
+        return pick(this.rng, this.transitions[context] ?? [END])
     }
 }
