@@ -77,6 +77,6 @@ export class MarkovModel {
     }
 
     private predictFrom(state: State): string {
-        return pick(this.rng, this.transitions[state.id()] ?? [END])
+        return pick(this.rng, this.transitions[state.id()] ?? state.textBoundary())
     }
 }
