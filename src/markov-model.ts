@@ -11,7 +11,7 @@ export interface Order {
 
 export interface State {
     id(): string;
-    afterObserving(token: string): State;
+    update(token: string): void;
     tail(): string[];
 }
 
@@ -32,9 +32,8 @@ class Order1State implements State {
         return this.token
     }
 
-    afterObserving(token: string): State {
+    update(token: string): void {
         this.token = token
-        return this
     }
 
     tail(): string[] {
@@ -61,7 +60,7 @@ export class MarkovModel {
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]
             ;(this.transitions[state.id()] ??= []).push(token)
-            state = state.afterObserving(token)
+            state.update(token)
         }
     }
 
@@ -72,7 +71,7 @@ export class MarkovModel {
         for (let i = 0; i < 42; i++) {
             const next = this.predictFrom(state)
             generated.push(next)
-            state = state.afterObserving(next)
+            state.update(next)
             if (this.isEndOfText(state)) break
         }
         return generated.join("")
