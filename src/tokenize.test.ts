@@ -57,9 +57,14 @@ test("tokenize", {
         expect(tokens, equals, ["99.", "0g"])
     },
 
-    "treats Chinese characters as words"() {
-        const tokens = [...tokenize("你好 世界")]
-        expect(tokens, equals, ["你好 ", "世界"])
+    "treats each Chinese character as a word"() {
+        const tokens = [...tokenize("你好世界")]
+        expect(tokens, equals, ["你", "好", "世", "界"])
+    },
+
+    "recognizes ideographic space and punctuation as space"() {
+        const tokens = [...tokenize("你好、　")]
+        expect(tokens, equals, ["你", "好、　"])
     },
 
     "treats emoji as space"() {
