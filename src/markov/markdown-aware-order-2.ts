@@ -27,8 +27,6 @@ export class MarkdownAwareOrder2State implements State {
         }
 
         if (token.includes("\n\n")) {
-            // If we just saw a paragraph break, forget the earlier context.
-            this.lastButOne = END
             // `[^]` matches any character including newlines.
             // `.` doesn't match newlines.
             this.last = token.match(/\n[^]*/)?.[0] ?? "\n\n"
