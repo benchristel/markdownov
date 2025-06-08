@@ -1,7 +1,8 @@
-import {cyrb128} from "./hash.js"
+import * as Hash from "./hash.js"
 
-export function sfc32(seed: string): () => number {
-    let [a, b, c, d] = cyrb128(seed)
+export function seedRandom(seed: string): () => number {
+    // The sfc32 algorithm
+    let [a, b, c, d] = Hash.cyrb128(seed)
     return function rng() {
         const t = (a + b | 0) + d | 0
         d = d + 1 | 0

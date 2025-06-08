@@ -1,9 +1,9 @@
 import {test, expect, equals, not} from "@benchristel/taste"
-import {sfc32} from "./random.js"
+import {seedRandom} from "./random.js"
 
-test("sfc32", {
+test("seedRandom", {
     "generates numbers in the interval [0, 1)"() {
-        const rng = sfc32("seed")
+        const rng = seedRandom("seed")
         for (let i = 0; i < 100; i++) {
             const randomNumber = rng()
             expect(randomNumber, isGreaterThanOrEqualTo, 0)
@@ -12,7 +12,7 @@ test("sfc32", {
     },
 
     "generates a variety of numbers"() {
-        const rng = sfc32("seed")
+        const rng = seedRandom("seed")
         const generated = new Set()
         const iterations = 100
         for (let i = 0; i < iterations; i++) {
@@ -22,8 +22,8 @@ test("sfc32", {
     },
 
     "is deterministic"() {
-        const rng1 = sfc32("seed")
-        const rng2 = sfc32("seed")
+        const rng1 = seedRandom("seed")
+        const rng2 = seedRandom("seed")
         const iterations = 10
         for (let i = 0; i < iterations; i++) {
             expect(rng1(), equals, rng2())
@@ -31,8 +31,8 @@ test("sfc32", {
     },
 
     "generates different numbers given different seeds"() {
-        const rng1 = sfc32("acorn")
-        const rng2 = sfc32("bean")
+        const rng1 = seedRandom("acorn")
+        const rng2 = seedRandom("bean")
         const iterations = 10
         for (let i = 0; i < iterations; i++) {
             expect(rng1(), not(equals), rng2())
