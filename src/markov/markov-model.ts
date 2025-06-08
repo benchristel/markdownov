@@ -1,6 +1,5 @@
 import {equals} from "@benchristel/taste"
 import {pick} from "../random.js"
-import {tokenize} from "../tokenize.js"
 import {State, END} from "./types.js"
 import {Order1} from "./order1.js"
 import {take} from "../iterators.js"
@@ -15,11 +14,7 @@ export class MarkovModel {
 
     train(text: string) {
         const textBoundary = this.order.textBoundary()
-        const tokens = [
-            ...textBoundary,
-            ...tokenize(text),
-            ...textBoundary,
-        ]
+        const tokens = this.order.tokenize(text)
         let state = this.order.initialState()
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]

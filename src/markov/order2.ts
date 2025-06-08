@@ -1,3 +1,4 @@
+import {tokenize} from "../tokenize.js"
 import {Order, State, END} from "./types.js"
 
 export class Order2 implements Order {
@@ -7,6 +8,14 @@ export class Order2 implements Order {
 
     initialState(): State {
         return new Order2State()
+    }
+
+    tokenize(text: string): string[] {
+        return [
+            ...this.textBoundary(),
+            ...tokenize(text),
+            ...this.textBoundary(),
+        ]
     }
 }
 
