@@ -3,6 +3,7 @@ import {pick} from "../random.js"
 import {tokenize} from "../tokenize.js"
 import {State, END} from "./types.js"
 import {Order1} from "./order1.js"
+import {take} from "../iterators.js"
 
 export class MarkovModel {
     private readonly transitions: Record<string, string[] | undefined> = {}
@@ -27,17 +28,18 @@ export class MarkovModel {
         }
     }
 
-    generate(): string {
-        let generated: string[] = this.order.textBoundary()
+    generate(limit = 100_000): string {
+        return [...take(limit, this.generateTokens())].join("")
+    }
+
+    *generateTokens(): Generator<string, void, undefined> {
+        yield* this.order.textBoundary()
         let state = this.order.initialState()
-        // TODO: magic number
-        for (let i = 0; i < 42; i++) {
+        do {
             const next = this.predictFrom(state)
-            generated.push(next)
+            yield next
             state.update(next)
-            if (this.isEndOfText(state)) break
-        }
-        return generated.join("")
+        } while (!this.isEndOfText(state))
     }
 
     private predictFrom(state: State): string {
