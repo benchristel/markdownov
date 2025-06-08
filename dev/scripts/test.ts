@@ -5,7 +5,7 @@ import {
     getAllTests,
     runTests,
     formatTestResultsAsText,
-    type TestResult
+    type TestResult,
 } from "@benchristel/taste"
 
 glob(getTestPathGlobs())
@@ -19,7 +19,7 @@ function getTestPathGlobs() {
     const repoRoot = join(__dirname, "..", "..")
     const commandLineArgs = process.argv.slice(2)
     if (commandLineArgs.length > 0) {
-        return commandLineArgs.map(path => join(repoRoot, path))
+        return commandLineArgs.map((path) => join(repoRoot, path))
     }
 
     return [

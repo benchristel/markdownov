@@ -1,6 +1,6 @@
 .DEFAULT_GOAL = right
 TEST = bun dev/scripts/test.ts
-LINT = bun run eslint src --config dev/config/eslint.config.js
+LINT = bun run eslint src dev --config dev/config/eslint.config.js
 TYPE = bun run tsc --noEmit --project dev/config/tsconfig.json
 
 .PHONY: right

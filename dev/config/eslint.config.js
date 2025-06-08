@@ -11,7 +11,9 @@ const styleRules = {
     "@stylistic/array-element-newline": ["error", "consistent"],
     "@stylistic/arrow-parens": ["error", "always"],
     "@stylistic/arrow-spacing": ["error", {before: true, after: true}],
-    "@stylistic/block-spacing": ["error", "always"],
+    // block-spacing is turned off because it fights with
+    // object-curly-spacing over how to format TS object types.
+    "@stylistic/block-spacing": ["off"],
     "@stylistic/brace-style": ["error", "1tbs"],
     "@stylistic/comma-dangle": ["error", "always-multiline"],
     "@stylistic/comma-spacing": ["error", {before: false, after: true}],
