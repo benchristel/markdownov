@@ -11,8 +11,6 @@ export interface Order {
 export interface State {
     id(): string;
     afterObserving(token: string): State;
-    empty(): State;
-    textBoundary(): typeof END[];
     isEndOfText(): boolean;
 }
 
@@ -36,18 +34,6 @@ class Order1State implements State {
     afterObserving(token: string): State {
         this.token = token
         return this
-    }
-
-    // TODO: this method doesn't interact with any instance variables.
-    // Move to a new Order interface?
-    empty(): State {
-        return new Order1State()
-    }
-
-    // TODO: this method doesn't interact with any instance variables.
-    // Move to a new Order interface?
-    textBoundary(): typeof END[] {
-        return [END]
     }
 
     isEndOfText(): boolean {
