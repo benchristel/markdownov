@@ -37,7 +37,7 @@ class Order1 implements State {
 }
 
 export class MarkovModel {
-    private transitions: Record<string, string[]> = {}
+    private transitions: Record<string, string[] | undefined> = {}
     private initialState: State
 
     constructor(
@@ -57,8 +57,7 @@ export class MarkovModel {
         let state = this.initialState
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]
-            this.transitions[state.id()] ??= []
-            this.transitions[state.id()].push(token)
+            ;(this.transitions[state.id()] ??= []).push(token)
             state = state.afterObserving(token)
         }
     }
