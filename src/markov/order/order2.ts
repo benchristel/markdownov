@@ -7,10 +7,6 @@ export class Order2 implements Order<string> {
     initialState(): State<string> {
         return new Order2State()
     }
-
-    tokenize(text: string): string[] {
-        return [...tokenize(text)]
-    }
 }
 
 export class Order2State implements State<string> {

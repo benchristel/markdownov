@@ -9,10 +9,6 @@ export class MarkdownAwareOrder2 implements Order<string> {
     initialState(): State<string> {
         return new MarkdownAwareOrder2State()
     }
-
-    tokenize(text: string): string[] {
-        return [...tokenize(text)]
-    }
 }
 
 export class MarkdownAwareOrder2State implements State<string> {

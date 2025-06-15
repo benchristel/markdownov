@@ -10,10 +10,6 @@ export class Lossy implements Order<string> {
         return new LossyState()
     }
 
-    tokenize(text: string): string[] {
-        return [...tokenize(text, this.tokenRegex())]
-    }
-
     tokenRegex(): RegExp {
         return /^([0-9\p{L}\p{M}]+|[^0-9\p{L}\p{M}]+)/u
     }
