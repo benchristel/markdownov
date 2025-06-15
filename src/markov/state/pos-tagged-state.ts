@@ -3,6 +3,7 @@ import pos from "pos"
 import {Tag} from "en-pos"
 import {State} from "../types.js"
 import {repeat, zip} from "../../arrays.js"
+import {DelimiterStack} from "./delimiter-stack.js"
 
 export class PosTaggedToken {
     constructor(
@@ -42,11 +43,14 @@ const literalTokensInContext = 2
 const textBoundary: PosTaggedToken[] = repeat(order, () => new EndToken())
 
 export class PosTaggedState implements State<PosTaggedToken> {
-    tail = [...textBoundary]
-    lastNonwordWithNewline = ""
+    private tail = [...textBoundary]
+    private lastNonwordWithNewline = ""
+    private delimiterStack = new DelimiterStack()
 
     id(): string {
-        return [
+        const unmatchedDelims = this.delimiterStack.getDelimiters()
+        const id = [
+            unmatchedDelims.join(","),
             this.lastNonwordWithNewline,
             ...this.tail.map((token, i) =>
                 i >= order - literalTokensInContext || token.isSpaceOrPunctuation()
@@ -54,9 +58,12 @@ export class PosTaggedState implements State<PosTaggedToken> {
                     : token.tag,
             ),
         ].join(":")
+
+        return id
     }
 
-    update(token: PosTaggedToken): void {
+    update(token: PosTaggedToken): string {
+        const s0 = this.delimiterStack.getDelimiters()
         const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
         if (newlineTrailer != null) {
             this.clearContext()
@@ -64,6 +71,14 @@ export class PosTaggedState implements State<PosTaggedToken> {
         }
         this.tail.push(token)
         this.tail.shift()
+
+        this.delimiterStack.process(token.word)
+
+        if (!equals(this.delimiterStack.getDelimiters(), s0)) {
+            return `{${this.delimiterStack.getDelimiters().join(",")}}`
+        } else {
+            return ""
+        }
     }
 
     isTerminal(): boolean {
@@ -77,13 +92,14 @@ export class PosTaggedState implements State<PosTaggedToken> {
     private clearContext() {
         this.tail = [...textBoundary]
         this.lastNonwordWithNewline = ""
+        this.delimiterStack = new DelimiterStack()
     }
 }
 
 export function tokenizeWithPosTags(text: string): PosTaggedToken[] {
     const tokens = text.split(punctuation).filter(Boolean)
     const words = tokens.filter(isWord)
-    const taggedWords = tagWithEnPos(words)
+    const taggedWords = tagWithPos(words)
     const tokenIterator = tokens[Symbol.iterator]()
     const ret: PosTaggedToken[] = []
     for (let [word, tag] of taggedWords) {

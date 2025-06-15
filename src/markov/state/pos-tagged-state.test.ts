@@ -40,7 +40,7 @@ test("tokenizeWithPosTags", {
             " :_",
             "types:NNS",
             " :_",
-            "form:VBP",
+            "form:NN",
             " :_",
             "the:DT",
             " :_",
