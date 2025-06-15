@@ -24,7 +24,6 @@ export class MarkovModel<T extends Token> {
     }
 
     private *generateTokens(): Generator<T, void, undefined> {
-        yield* this.order.textBoundary()
         let state = this.order.initialState()
         do {
             const next = this.predictFrom(state)
