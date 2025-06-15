@@ -15,8 +15,7 @@ export class MarkovModel<T extends Token> {
         let state = this.order.initialState()
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i]
-            // TODO: this is gross. `transitions` really needs to be an object.
-            ;(this.transitions[state.id()] ??= []).push(token)
+            this.recordTransition(state, token)
             state.update(token)
         }
     }
@@ -36,7 +35,17 @@ export class MarkovModel<T extends Token> {
     }
 
     private predictFrom(state: State<T>): T {
-        const possibilities = this.transitions[state.id()] ?? []
-        return pick(this.rng, possibilities) ?? this.order.defaultToken()
+        return pick(this.rng, this.possibilities(state))
+            ?? this.order.defaultToken()
+    }
+
+    private recordTransition(from: State<T>, to: T): void {
+        // TODO: Might be primitive obsession? Make transitions a class?
+        (this.transitions[from.id()] ??= []).push(to)
+    }
+
+    private possibilities(state: State<T>): T[] {
+        // TODO: Might be primitive obsession? Make transitions a class?
+        return this.transitions[state.id()] ?? []
     }
 }
