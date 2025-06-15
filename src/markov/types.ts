@@ -6,6 +6,7 @@ export interface Order<T extends Token> {
     textBoundary(): T[];
     initialState(): State<T>;
     tokenize(text: string): T[];
+    defaultToken(): T;
 }
 
 export interface State<T extends Token> {

@@ -19,6 +19,10 @@ export class Order1 implements Order<string> {
             ...this.textBoundary(),
         ]
     }
+
+    defaultToken(): string {
+        return END
+    }
 }
 
 export class Order1State implements State<string> {

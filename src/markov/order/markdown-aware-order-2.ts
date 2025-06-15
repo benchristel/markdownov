@@ -19,6 +19,10 @@ export class MarkdownAwareOrder2 implements Order<string> {
             ...this.textBoundary(),
         ]
     }
+
+    defaultToken(): string {
+        return END
+    }
 }
 
 export class MarkdownAwareOrder2State implements State<string> {

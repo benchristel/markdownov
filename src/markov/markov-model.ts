@@ -1,17 +1,16 @@
 import {equals} from "@benchristel/taste"
 import {pick} from "../random.js"
 import {State, Order, Token} from "./types.js"
-import {Order1} from "./order/order1.js"
 import {take} from "../iterators.js"
 
-export class MarkovModel {
+export class MarkovModel<T extends Token> {
     // TODO: make MarkovModel generic and make the value of transitions use
     // the token type.
-    private readonly transitions: Record<string, string[] | undefined> = {}
+    private readonly transitions: Record<string, T[] | undefined> = {}
 
     constructor(
         private readonly rng: () => number,
-        private readonly order: Order<string> = new Order1(),
+        private readonly order: Order<T>,
     ) {}
 
     train(text: string) {
@@ -30,7 +29,7 @@ export class MarkovModel {
         return [...take(limit, this.generateTokens())].join("")
     }
 
-    *generateTokens(): Generator<string, void, undefined> {
+    *generateTokens(): Generator<T, void, undefined> {
         yield* this.order.textBoundary()
         let state = this.order.initialState()
         do {
@@ -40,16 +39,14 @@ export class MarkovModel {
         } while (!this.isEndOfText(state))
     }
 
-    private predictFrom(state: State<string>): string {
-        // TODO: the dependency on END is gross. Could State predict its own
-        // next states, given transitions? Maybe transitions should be built
-        // by Order?
+    private predictFrom(state: State<T>): T {
         // TODO: decouple from token type
-        const possibilities = this.transitions[state.id()] ?? [""]
-        return pick(this.rng, possibilities)
+        const possibilities = this.transitions[state.id()] ?? []
+        return pick(this.rng, possibilities) ?? this.order.defaultToken()
     }
 
-    private isEndOfText(state: State<string>): boolean {
+    private isEndOfText(state: State<T>): boolean {
+        // TODO: feature envy. Move to State.
         return equals(state.tail(), this.order.textBoundary())
     }
 }

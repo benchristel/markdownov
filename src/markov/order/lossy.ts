@@ -20,6 +20,10 @@ export class Lossy implements Order<string> {
         ]
     }
 
+    defaultToken(): string {
+        return END
+    }
+
     tokenRegex(): RegExp {
         return /^([0-9\p{L}\p{M}]+|[^0-9\p{L}\p{M}]+)/u
     }
