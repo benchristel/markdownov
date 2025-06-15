@@ -23,7 +23,7 @@ export class MarkovModel<T extends Token> {
         return [...take(limit, this.generateTokens())].join("")
     }
 
-    *generateTokens(): Generator<T, void, undefined> {
+    private *generateTokens(): Generator<T, void, undefined> {
         yield* this.order.textBoundary()
         let state = this.order.initialState()
         do {
