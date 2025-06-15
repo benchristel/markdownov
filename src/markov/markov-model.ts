@@ -1,4 +1,3 @@
-import {equals} from "@benchristel/taste"
 import {pick} from "../random.js"
 import {State, Order, Token} from "./types.js"
 import {take} from "../iterators.js"
@@ -14,6 +13,9 @@ export class MarkovModel<T extends Token> {
     ) {}
 
     train(text: string) {
+        // TODO: WTF. This textBoundary stuff doesn't need to be here. The
+        // tokenized text shouldn't include the initial boundary, since we just
+        // ignore those tokens.
         const textBoundary = this.order.textBoundary()
         const tokens = this.order.tokenize(text)
         let state = this.order.initialState()
@@ -36,17 +38,12 @@ export class MarkovModel<T extends Token> {
             const next = this.predictFrom(state)
             yield next
             state.update(next)
-        } while (!this.isEndOfText(state))
+        } while (!state.isTerminal())
     }
 
     private predictFrom(state: State<T>): T {
         // TODO: decouple from token type
         const possibilities = this.transitions[state.id()] ?? []
         return pick(this.rng, possibilities) ?? this.order.defaultToken()
-    }
-
-    private isEndOfText(state: State<T>): boolean {
-        // TODO: feature envy. Move to State.
-        return equals(state.tail(), this.order.textBoundary())
     }
 }

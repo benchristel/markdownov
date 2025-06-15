@@ -1,11 +1,13 @@
+import {equals} from "@benchristel/taste"
 import {tokenize} from "../../tokenize.js"
 import {Order, State} from "../types.js"
 
 const END = ""
+const textBoundary: typeof END[] = [END, END, END, END, END, END, END]
 
 export class Lossy implements Order<string> {
     textBoundary(): typeof END[] {
-        return new LossyState().tail().map(() => END)
+        return textBoundary
     }
 
     initialState(): State<string> {
@@ -30,14 +32,15 @@ export class Lossy implements Order<string> {
 }
 
 export class LossyState implements State<string> {
-    lastNonwordWithNewline = ""
-    _tail = [END, END, END, END, END, END, END]
-    order = this._tail.length
+    private lastNonwordWithNewline = ""
+    private tail: string[] = [...textBoundary]
+
+    order = this.tail.length
 
     id(): string {
         return [
             this.lastNonwordWithNewline,
-            ...this._tail.map((token, i) =>
+            ...this.tail.map((token, i) =>
                 i < this.order - 2
                     ? this.efface(token)
                     : token,
@@ -52,15 +55,15 @@ export class LossyState implements State<string> {
                 token.match(/\n.*/m)?.[0] ?? ""
         }
 
-        this._tail.push(token)
-        this._tail.shift()
+        this.tail.push(token)
+        this.tail.shift()
     }
 
-    tail(): string[] {
-        return [...this._tail]
+    isTerminal(): boolean {
+        return equals(this.tail, textBoundary)
     }
 
-    efface(token: string): string {
+    private efface(token: string): string {
         return token.match(/^\w/)
             ? token[token.length - 1]
             : token

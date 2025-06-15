@@ -2,6 +2,7 @@ import {tokenize} from "../../tokenize.js"
 import {Order, State} from "../types.js"
 
 const END = ""
+const textBoundary: typeof END[] = [END, END]
 
 export class Order2 implements Order<string> {
     textBoundary(): typeof END[] {
@@ -40,5 +41,9 @@ export class Order2State implements State<string> {
 
     tail(): string[] {
         return [this.lastButOne, this.last]
+    }
+
+    isTerminal(): boolean {
+        return this.lastButOne === END && this.last === END
     }
 }

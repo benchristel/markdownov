@@ -12,5 +12,5 @@ export interface Order<T extends Token> {
 export interface State<T extends Token> {
     id(): string;
     update(token: T): void;
-    tail(): T[];
+    isTerminal(): boolean;
 }

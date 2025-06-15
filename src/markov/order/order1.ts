@@ -36,7 +36,7 @@ export class Order1State implements State<string> {
         this.token = token
     }
 
-    tail(): string[] {
-        return [this.token]
+    isTerminal(): boolean {
+        return this.token === END
     }
 }

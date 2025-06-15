@@ -1,11 +1,13 @@
+import {equals} from "@benchristel/taste"
 import {tokenize} from "../../tokenize.js"
 import {Order, State} from "../types.js"
 
 const END = ""
+const textBoundary: typeof END[] = [END, END]
 
 export class MarkdownAwareOrder2 implements Order<string> {
     textBoundary(): typeof END[] {
-        return [END, END]
+        return textBoundary
     }
 
     initialState(): State<string> {
@@ -14,9 +16,9 @@ export class MarkdownAwareOrder2 implements Order<string> {
 
     tokenize(text: string): string[] {
         return [
-            ...this.textBoundary(),
+            ...textBoundary,
             ...tokenize(text),
-            ...this.textBoundary(),
+            ...textBoundary,
         ]
     }
 
@@ -51,7 +53,7 @@ export class MarkdownAwareOrder2State implements State<string> {
         }
     }
 
-    tail(): string[] {
-        return [this.lastButOne, this.last]
+    isTerminal(): boolean {
+        return equals([this.lastButOne, this.last], textBoundary)
     }
 }
