@@ -17,6 +17,11 @@ export class MarkovModel<T extends Token> {
             this.recordTransition(state, token)
             state.update(token)
         }
+        while (!state.isTerminal()) {
+            const token = state.terminalToken()
+            this.recordTransition(state, token)
+            state.update(token)
+        }
     }
 
     generate(limit = 100_000): string {

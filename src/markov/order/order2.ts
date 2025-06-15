@@ -4,19 +4,12 @@ import {Order, State} from "../types.js"
 const END = ""
 
 export class Order2 implements Order<string> {
-    textBoundary(): typeof END[] {
-        return [END, END]
-    }
-
     initialState(): State<string> {
         return new Order2State()
     }
 
     tokenize(text: string): string[] {
-        return [
-            ...tokenize(text),
-            ...this.textBoundary(),
-        ]
+        return [...tokenize(text)]
     }
 }
 

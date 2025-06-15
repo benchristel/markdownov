@@ -6,19 +6,12 @@ const END = ""
 const textBoundary: typeof END[] = [END, END]
 
 export class MarkdownAwareOrder2 implements Order<string> {
-    textBoundary(): typeof END[] {
-        return textBoundary
-    }
-
     initialState(): State<string> {
         return new MarkdownAwareOrder2State()
     }
 
     tokenize(text: string): string[] {
-        return [
-            ...tokenize(text),
-            ...textBoundary,
-        ]
+        return [...tokenize(text)]
     }
 }
 

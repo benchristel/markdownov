@@ -6,19 +6,12 @@ const END = ""
 const textBoundary: typeof END[] = [END, END, END, END, END, END, END]
 
 export class Lossy implements Order<string> {
-    textBoundary(): typeof END[] {
-        return textBoundary
-    }
-
     initialState(): State<string> {
         return new LossyState()
     }
 
     tokenize(text: string): string[] {
-        return [
-            ...tokenize(text, this.tokenRegex()),
-            ...this.textBoundary(),
-        ]
+        return [...tokenize(text, this.tokenRegex())]
     }
 
     tokenRegex(): RegExp {
