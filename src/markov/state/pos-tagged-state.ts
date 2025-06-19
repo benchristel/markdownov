@@ -64,6 +64,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
 
     update(token: PosTaggedToken): string {
         const s0 = this.delimiterStack.getDelimiters()
+        // TODO: Demeter violation
         const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
         if (newlineTrailer != null) {
             this.clearContext()
@@ -118,6 +119,7 @@ export function tokenizeWithPosTags(text: string): PosTaggedToken[] {
     return ret
 }
 
+// TODO: Dead code
 function tagWithEnPos(words: string[]): [string, string][] {
     const result = new Tag(words).initial().smooth()
     return zip(result.tokens, result.tags)
