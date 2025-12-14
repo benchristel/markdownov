@@ -7,8 +7,14 @@ export function testBehavesLikeState(TheState: new () => State<UnknownToken>) {
     test(TheState.name, {
         "terminates given the default token"() {
             const state = new TheState()
-            state.update(state.terminalToken())
+            state.update(state.terminalToken(), emptyTokenFrequencies)
             expect(state.isTerminal(), is, true)
         },
     })
+}
+
+const emptyTokenFrequencies = {
+    fractionOfAllTokens() {
+        return 0
+    },
 }

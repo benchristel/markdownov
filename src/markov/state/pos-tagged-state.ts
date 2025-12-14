@@ -1,7 +1,7 @@
 import {equals} from "@benchristel/taste"
 import pos from "pos"
 import {Tag} from "en-pos"
-import {State} from "../types.js"
+import {State, TokenFrequencies} from "../types.js"
 import {repeat, zip} from "../../arrays.js"
 import {DelimiterStack} from "./delimiter-stack.js"
 
@@ -38,18 +38,22 @@ export class EndToken extends PosTaggedToken {
     }
 }
 
-const order = 6
-const literalTokensInContext = 2
+const order = 2
+const salienceDecay = 0.9
+const literalTokensInContext = 1
 const textBoundary: PosTaggedToken[] = repeat(order, () => new EndToken())
 
 export class PosTaggedState implements State<PosTaggedToken> {
     private tail = [...textBoundary]
     private lastNonwordWithNewline = ""
     private delimiterStack = new DelimiterStack()
+    private salientToken: PosTaggedToken = new EndToken()
+    private salientTokenStrength = 0
 
     id(): string {
         const unmatchedDelims = this.delimiterStack.getDelimiters()
         const id = [
+            this.salientToken,
             unmatchedDelims.join(","),
             this.lastNonwordWithNewline,
             ...this.tail.map((token, i) =>
@@ -62,7 +66,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
         return id
     }
 
-    update(token: PosTaggedToken): string {
+    update(token: PosTaggedToken, freq: TokenFrequencies<PosTaggedToken>): string {
         const s0 = this.delimiterStack.getDelimiters()
         // TODO: Demeter violation
         const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
@@ -74,6 +78,13 @@ export class PosTaggedState implements State<PosTaggedToken> {
         this.tail.shift()
 
         this.delimiterStack.process(token.word)
+
+        this.salientTokenStrength *= salienceDecay
+        const currentTokenStrength = 1 / freq.fractionOfAllTokens(token)
+        if (currentTokenStrength > this.salientTokenStrength) {
+            this.salientToken = token
+            this.salientTokenStrength = currentTokenStrength
+        }
 
         if (!equals(this.delimiterStack.getDelimiters(), s0)) {
             return `{${this.delimiterStack.getDelimiters().join(",")}}`
