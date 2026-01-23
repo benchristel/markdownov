@@ -1,5 +1,6 @@
 import {test, expect, equals} from "@benchristel/taste"
 import {DelimiterStack} from "./delimiter-stack.js"
+import {tokenizeWithPosTags} from "./pos-tagged-state.js"
 
 test("DelimiterStack", {
     "starts empty"() {
@@ -133,6 +134,41 @@ test("DelimiterStack", {
         stack.process("**Hello")
         const delimiters = stack.getDelimiters()
         expect(delimiters, equals, ["**"])
+    },
+
+    "handles a complete markdown code block"() {
+        const stack = new DelimiterStack()
+        stack.process("```\nhello\n```")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "handles a markdown code block with a language tag"() {
+        const stack = new DelimiterStack()
+        stack.process("```bash\necho hi\n```")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "keeps track of an unterminated code block"() {
+        const stack = new DelimiterStack()
+        stack.process("\n```\n    hello\n")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, ["```"])
+    },
+
+    "keeps track of an unterminated code block with a language tag"() {
+        const stack = new DelimiterStack()
+        stack.process("```bash\necho hi\n")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, ["```"])
+    },
+
+    "ignores closing delimiters escaped by code blocks"() {
+        const stack = new DelimiterStack()
+        stack.process("**a\n```**")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, ["**", "```", "**"])
     },
 
     "processes a Markdown image tag"() {

@@ -62,24 +62,16 @@ export class PosTaggedState implements State<PosTaggedToken> {
         return id
     }
 
-    update(token: PosTaggedToken): string {
-        const s0 = this.delimiterStack.getDelimiters()
+    update(token: PosTaggedToken): void {
         // TODO: Demeter violation
         const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
         if (newlineTrailer != null) {
-            this.clearContext()
             this.lastNonwordWithNewline = newlineTrailer
         }
         this.tail.push(token)
         this.tail.shift()
 
         this.delimiterStack.process(token.word)
-
-        if (!equals(this.delimiterStack.getDelimiters(), s0)) {
-            return `{${this.delimiterStack.getDelimiters().join(",")}}`
-        } else {
-            return ""
-        }
     }
 
     isTerminal(): boolean {
@@ -88,12 +80,6 @@ export class PosTaggedState implements State<PosTaggedToken> {
 
     terminalToken(): PosTaggedToken {
         return new EndToken()
-    }
-
-    private clearContext() {
-        this.tail = [...textBoundary]
-        this.lastNonwordWithNewline = ""
-        this.delimiterStack = new DelimiterStack()
     }
 }
 

@@ -1,4 +1,4 @@
-import {test, expect, is} from "@benchristel/taste"
+import {test, expect, is, not} from "@benchristel/taste"
 import {Markdownov} from "./markdownov.js"
 
 const exampleData = `
@@ -30,7 +30,7 @@ test("Markdownov", {
         const m = new Markdownov({seed: "1"})
         m.train(exampleData)
         const output = m.generate()
-        expect(output, contains, "all the delicate art of the woodsman")
+        expect(exampleData, not(contains), output)
     },
 
     "generates nothing if not trained"() {
