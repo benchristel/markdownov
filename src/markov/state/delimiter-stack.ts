@@ -18,7 +18,7 @@ export class DelimiterStack {
                 this.stack = this.stack.slice(0, i)
                 return
             }
-            if (isCodeBlock(unmatchedOpenDelim)) {
+            if (isCode(unmatchedOpenDelim)) {
                 // don't close a delimiter outside a code block with one inside.
                 break
             }
@@ -47,6 +47,6 @@ function isOpeningMatchFor(closing: string, opening: string): boolean {
         || opening.endsWith("**") && closing.startsWith("**")
 }
 
-function isCodeBlock(delimiter: string): boolean {
-    return /```/.test(delimiter)
+function isCode(delimiter: string): boolean {
+    return /`/.test(delimiter)
 }

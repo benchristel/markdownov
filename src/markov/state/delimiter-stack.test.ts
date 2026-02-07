@@ -140,12 +140,16 @@ test("DelimiterStack", {
         expectStackAfter("`", ["`"])
     },
 
-    "closes inline code blocks"() {
+    "closes inline code"() {
         expectStackAfter("`a`", [])
     },
 
-    "ignores markdown syntax in code blocks"() {
+    "ignores opening markdown delimiters in inline code"() {
         expectStackAfter("` **a`", [])
+    },
+
+    "ignores closing markdown delimiters in inline code"() {
+        expectStackAfter("**a `b** `", ["**"])
     },
 
     "processes a Markdown image tag"() {
