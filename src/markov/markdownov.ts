@@ -10,6 +10,7 @@ export interface MarkdownovParams {
     seed?: string;
 }
 
+// TODO: allow clients to choose a state type instead of always using PosTaggedState
 export class Markdownov {
     private readonly model: MarkovModel<PosTaggedToken>
     constructor(params: MarkdownovParams = {}) {

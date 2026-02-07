@@ -29,10 +29,12 @@ export class DelimiterStack {
     }
 }
 
-const delimiterRegex = /[\(\)\[\]\{\}“”]|\s?(["_]|\*\*)\s?|```/g
+// TODO: treat other punctuation as such around ** and _. Currently, only
+// commas are treated as punctuation.
+const delimiterRegex = /[\(\)\[\]\{\}“”]|([\s,]|^)(["_]|\*\*)|(["_]|\*\*)([\s,]|$)|```|`/g
 
 function couldBeOpening(delimiter: string): boolean {
-    return /\(|\{|\[|“|(["\*_]|\*\*)$|```/.test(delimiter)
+    return /\(|\{|\[|“|(["\*_]|\*\*)$|```|`/.test(delimiter)
 }
 
 function isOpeningMatchFor(closing: string, opening: string): boolean {
@@ -40,6 +42,7 @@ function isOpeningMatchFor(closing: string, opening: string): boolean {
         || opening === "{" && closing === "}"
         || opening === "[" && closing === "]"
         || opening === "```" && closing === "```"
+        || opening === "`" && closing === "`"
         || opening.endsWith(`"`) && closing.startsWith(`"`)
         || opening.endsWith(`“`) && closing.startsWith(`”`)
         || opening.endsWith("_") && closing.startsWith("_")

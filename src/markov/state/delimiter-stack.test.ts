@@ -171,6 +171,27 @@ test("DelimiterStack", {
         expect(delimiters, equals, ["**", "```", "**"])
     },
 
+    "keeps track of unterminated inline code"() {
+        const stack = new DelimiterStack()
+        stack.process("`")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, ["`"])
+    },
+
+    "closes inline code blocks"() {
+        const stack = new DelimiterStack()
+        stack.process("`a`")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "ignores markdown syntax in code blocks"() {
+        const stack = new DelimiterStack()
+        stack.process("`**`")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
     "processes a Markdown image tag"() {
         const stack = new DelimiterStack()
         stack.process(`![this alt text says "hi"](https://example.com)`)
@@ -189,6 +210,6 @@ test("DelimiterStack", {
         const stack = new DelimiterStack()
         stack.process(`here_is_some_snake_case_!`)
         const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["_"])
+        expect(delimiters, equals, [])
     },
 })
