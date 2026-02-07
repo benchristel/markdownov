@@ -29,9 +29,7 @@ export class DelimiterStack {
     }
 }
 
-// TODO: treat other punctuation as such around ** and _. Currently, only
-// commas are treated as punctuation.
-const delimiterRegex = /[\(\)\[\]\{\}“”]|([\s,]|^)(["_]|\*\*)|(["_]|\*\*)([\s,]|$)|```|`/g
+const delimiterRegex = /[\(\)\[\]\{\}“”]|(\s|^)(["_]|\*\*)|(["_]|\*\*)([\s,:.!?]|$)|```|`/g
 
 function couldBeOpening(delimiter: string): boolean {
     return /\(|\{|\[|“|(["\*_]|\*\*)$|```|`/.test(delimiter)

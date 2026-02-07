@@ -136,6 +136,41 @@ test("DelimiterStack", {
         expect(delimiters, equals, ["**"])
     },
 
+    "closes strong text followed by colon"() {
+        const stack = new DelimiterStack()
+        stack.process("**Hello**:")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "closes strong text followed by period"() {
+        const stack = new DelimiterStack()
+        stack.process("**Hello**.")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "closes strong text followed by comma"() {
+        const stack = new DelimiterStack()
+        stack.process("**Hello**,")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "closes strong text followed by bang"() {
+        const stack = new DelimiterStack()
+        stack.process("**Hello**!")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
+    "closes strong text followed by question mark"() {
+        const stack = new DelimiterStack()
+        stack.process("**Hello**?|")
+        const delimiters = stack.getDelimiters()
+        expect(delimiters, equals, [])
+    },
+
     "handles a complete markdown code block"() {
         const stack = new DelimiterStack()
         stack.process("```\nhello\n```")
