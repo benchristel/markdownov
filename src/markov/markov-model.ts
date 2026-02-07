@@ -2,15 +2,15 @@ import {pick} from "../random.js"
 import {State, Token} from "./types.js"
 import {take} from "../iterators.js"
 
-export class MarkovModel<T extends Token> {
-    private readonly transitions: Record<string, T[] | undefined> = {}
+export class MarkovModel<TokenT extends Token> {
+    private readonly transitions: Record<string, TokenT[] | undefined> = {}
 
     constructor(
         private readonly rng: () => number,
-        private readonly initialState: () => State<T>,
+        private readonly initialState: () => State<TokenT>,
     ) {}
 
-    train(tokens: Iterable<T>) {
+    train(tokens: Iterable<TokenT>) {
         let state = this.initialState()
         for (const token of tokens) {
             this.recordTransition(state, token)
@@ -27,7 +27,7 @@ export class MarkovModel<T extends Token> {
         return [...take(limit, this.generateTokens())].join("")
     }
 
-    private *generateTokens(): Generator<T, void, undefined> {
+    private *generateTokens(): Generator<TokenT, void, undefined> {
         let state = this.initialState()
         do {
             const next = this.predictFrom(state)
@@ -36,17 +36,17 @@ export class MarkovModel<T extends Token> {
         } while (!state.isTerminal())
     }
 
-    private predictFrom(state: State<T>): T {
+    private predictFrom(state: State<TokenT>): TokenT {
         return pick(this.rng, this.possibilities(state))
             ?? state.terminalToken()
     }
 
-    private recordTransition(from: State<T>, to: T): void {
+    private recordTransition(from: State<TokenT>, to: TokenT): void {
         // TODO: Might be primitive obsession? Make transitions a class?
         (this.transitions[from.id()] ??= []).push(to)
     }
 
-    private possibilities(state: State<T>): T[] {
+    private possibilities(state: State<TokenT>): TokenT[] {
         // TODO: Might be primitive obsession? Make transitions a class?
         return this.transitions[state.id()] ?? []
     }
