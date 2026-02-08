@@ -2,8 +2,20 @@ import {pick} from "../random.js"
 import {State, Token} from "./types.js"
 import {take} from "../iterators.js"
 
+class Transitions<TokenT extends Token> {
+    private readonly storage: Record<string, TokenT[] | undefined> = {}
+
+    record(from: string, to: TokenT): void {
+        (this.storage[from] ??= []).push(to)
+    }
+
+    possibilities(stateId: string): TokenT[] {
+        return this.storage[stateId] ?? []
+    }
+}
+
 export class MarkovModel<TokenT extends Token> {
-    private readonly transitions: Record<string, TokenT[] | undefined> = {}
+    private readonly transitions = new Transitions<TokenT>()
 
     constructor(
         private readonly rng: () => number,
@@ -37,17 +49,11 @@ export class MarkovModel<TokenT extends Token> {
     }
 
     private predictFrom(state: State<TokenT>): TokenT {
-        return pick(this.rng, this.possibilities(state))
+        return pick(this.rng, this.transitions.possibilities(state.id()))
             ?? state.terminalToken()
     }
 
     private recordTransition(from: State<TokenT>, to: TokenT): void {
-        // TODO: Might be primitive obsession? Make transitions a class?
-        (this.transitions[from.id()] ??= []).push(to)
-    }
-
-    private possibilities(state: State<TokenT>): TokenT[] {
-        // TODO: Might be primitive obsession? Make transitions a class?
-        return this.transitions[state.id()] ?? []
+        this.transitions.record(from.id(), to)
     }
 }
