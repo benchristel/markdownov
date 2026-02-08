@@ -53,6 +53,7 @@ export class MarkovModel<TokenT extends Token> {
     }
 
     private predictFrom(state: State<TokenT>): TokenT {
+        // TODO: pass this.rng to transitions via constructor injection
         return this.transitions.pick(this.rng, state.id())
             ?? state.terminalToken()
     }
