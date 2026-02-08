@@ -20,7 +20,9 @@ export function *tokenize(
 ): Generator<string> {
     let token: string | undefined
     let rest = text
-    while (token = rest.match(tokenRegex)?.[0]) {
+    while (true) {
+        token = rest.match(tokenRegex)?.[0]
+        if (!token) break
         yield token
         rest = rest.slice(token.length)
     }

@@ -11,7 +11,7 @@ class Transitions<TokenT extends Token> {
         (this.storage[from.id()] ??= []).push(to)
     }
 
-    pick(state: State<TokenT>): TokenT {
+    predictFrom(state: State<TokenT>): TokenT {
         return pick(this.rng, this.storage[state.id()] ?? []) ?? state.terminalToken()
     }
 
@@ -50,14 +50,10 @@ export class MarkovModel<TokenT extends Token> {
     private *generateTokens(): Generator<TokenT, void, undefined> {
         let state = this.initialState()
         do {
-            const next = this.predictFrom(state)
+            const next = this.transitions.predictFrom(state)
             yield next
             state.update(next)
         } while (!state.isTerminal())
-    }
-
-    private predictFrom(state: State<TokenT>): TokenT {
-        return this.transitions.pick(state)
     }
 
     private recordTransition(from: State<TokenT>, to: TokenT): void {

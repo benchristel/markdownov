@@ -1,5 +1,6 @@
 // @ts-check
 
+import js from "@eslint/js"
 import stylistic from "@stylistic/eslint-plugin"
 // @ts-expect-error - can't find type declarations for "@typescript-eslint/parser"
 import parserTs from "@typescript-eslint/parser"
@@ -100,15 +101,25 @@ const styleRules = {
     "@stylistic/yield-star-spacing": "error",
 }
 export default [
+    js.configs.recommended,
     {
+        files,
+        languageOptions: {
+            parser: parserTs,
+            globals: {
+                process: "readonly",
+                console: "readonly",
+                __dirname: "readonly",
+            },
+        },
+        plugins: {
+            "@stylistic": stylistic,
+        },
         rules: {
             ...styleRules,
             "no-useless-escape": "error",
-        },
-        files,
-        languageOptions: {parser: parserTs},
-        plugins: {
-            "@stylistic": stylistic,
+            "no-unused-vars": "off",
+            "no-undef": "off",
         },
     },
 ]
