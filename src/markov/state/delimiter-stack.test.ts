@@ -160,8 +160,7 @@ test("DelimiterStack", {
         expectStackAfter(`![this alt text says "hi"](https://`, ["("])
     },
 
-    // TODO:
-    // "treats snake case as literal, not intra-word emphasis"() {
-    //     expectStackAfter(`snake_case!`, [])
-    // },
+    "treats snake case as literal, not intra-word emphasis"() {
+        expectStackAfter(`snake_case!`, [])
+    },
 })
