@@ -9,6 +9,10 @@ class Transitions<TokenT extends Token> {
         (this.storage[from] ??= []).push(to)
     }
 
+    pick(rng: () => number, stateId: string): TokenT | undefined {
+        return pick(rng, this.storage[stateId] ?? [])
+    }
+
     possibilities(stateId: string): TokenT[] {
         return this.storage[stateId] ?? []
     }
@@ -49,8 +53,7 @@ export class MarkovModel<TokenT extends Token> {
     }
 
     private predictFrom(state: State<TokenT>): TokenT {
-        // TODO: make pick a method on Transitions and call it here.
-        return pick(this.rng, this.transitions.possibilities(state.id()))
+        return this.transitions.pick(this.rng, state.id())
             ?? state.terminalToken()
     }
 
