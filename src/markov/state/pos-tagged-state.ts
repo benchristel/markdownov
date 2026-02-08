@@ -22,6 +22,10 @@ export class PosTaggedToken {
         return /^[^0-9\p{L}\p{M}]/u.test(this.word)
     }
 
+    newlineTrailer(): string | undefined {
+        return this.word.match(/\n[^]*$/)?.[0]
+    }
+
     toString(): string {
         return this.word
     }
@@ -62,8 +66,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
     }
 
     update(token: PosTaggedToken): void {
-        // TODO: Demeter violation
-        const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
+        const newlineTrailer = token.newlineTrailer()
         if (newlineTrailer != null) {
             this.lastNonwordWithNewline = newlineTrailer
         }
