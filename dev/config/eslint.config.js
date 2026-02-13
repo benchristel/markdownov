@@ -118,6 +118,8 @@ export default [
         rules: {
             ...styleRules,
             "no-useless-escape": "error",
+            // TODO: no-unused-vars doesn't work well with TypeScript. Replace
+            // with a ts-appropriate rule.
             "no-unused-vars": "off",
             "no-undef": "error",
         },
