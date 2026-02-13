@@ -3,7 +3,7 @@
 import js from "@eslint/js"
 import stylistic from "@stylistic/eslint-plugin"
 // @ts-expect-error - can't find type declarations for "@typescript-eslint/parser"
-import parserTs from "@typescript-eslint/parser"
+import typescriptParser from "@typescript-eslint/parser"
 const files = ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.mjs", "**/*.cjs"]
 const indent = 4
 const styleRules = {
@@ -105,7 +105,7 @@ export default [
     {
         files,
         languageOptions: {
-            parser: parserTs,
+            parser: typescriptParser,
             globals: {
                 process: "readonly",
                 console: "readonly",
