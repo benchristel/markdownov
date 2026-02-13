@@ -119,7 +119,7 @@ export default [
             ...styleRules,
             "no-useless-escape": "error",
             "no-unused-vars": "off",
-            "no-undef": "off",
+            "no-undef": "error",
         },
     },
 ]
