@@ -16,5 +16,9 @@ export interface State<T extends Token> {
      * Whether the text generation has reached a natural conclusion.
      */
     isTerminal(): boolean;
+    /**
+     * A token that, if repeated passed to `update()`, will eventually cause
+     * `isTerminal()` to be true.
+     */
     terminalToken(): T;
 }
