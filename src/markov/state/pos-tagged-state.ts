@@ -1,7 +1,7 @@
 import {equals} from "@benchristel/taste"
 import pos from "pos"
 import {State} from "../types.js"
-import {repeat, zip} from "../../arrays.js"
+import {repeat} from "../../arrays.js"
 import {DelimiterStack} from "./delimiter-stack.js"
 import invariant from "tiny-invariant"
 
