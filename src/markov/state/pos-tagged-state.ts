@@ -3,6 +3,7 @@ import pos from "pos"
 import {State} from "../types.js"
 import {repeat, zip} from "../../arrays.js"
 import {DelimiterStack} from "./delimiter-stack.js"
+import invariant from "tiny-invariant"
 
 export class PosTaggedToken {
     constructor(
@@ -41,22 +42,39 @@ export class EndToken extends PosTaggedToken {
     }
 }
 
-const order = 6
-const literalTokensInContext = 2
-const textBoundary: PosTaggedToken[] = repeat(order, () => new EndToken())
+interface PosTaggedStateOptions {
+    order?: number;
+    literalTokensInContext?: number;
+}
 
 export class PosTaggedState implements State<PosTaggedToken> {
-    private tail = [...textBoundary]
+    private readonly order: number
+    private readonly literalTokensInContext: number
+    private readonly textBoundary: PosTaggedToken[]
+    private tail: PosTaggedToken[]
     private lastNonwordWithNewline = ""
     private delimiterStack = new DelimiterStack()
 
+    constructor(options: PosTaggedStateOptions = {}) {
+        this.order = options.order ?? 6
+        this.literalTokensInContext = options.literalTokensInContext
+            ?? Math.min(2, this.order)
+        invariant(this.order > 0, "order must be greater than zero")
+        invariant(Number.isInteger(this.order), "order must be an integer")
+        invariant(this.literalTokensInContext <= this.order, "literalTokensInContext must not be greater than order")
+        invariant(Number.isInteger(this.literalTokensInContext), "literalTokensInContext must be an integer")
+        this.textBoundary = repeat(this.order, () => new EndToken())
+        this.tail = [...this.textBoundary]
+    }
+
+    // TODO: rename value() to context()
     value(): string {
         const unmatchedDelims = this.delimiterStack.getDelimiters()
         const id = [
             unmatchedDelims.join(","),
             this.lastNonwordWithNewline,
             ...this.tail.map((token, i) =>
-                i >= order - literalTokensInContext || token.isSpaceOrPunctuation()
+                i >= this.order - this.literalTokensInContext || token.isSpaceOrPunctuation()
                     ? token.word
                     : token.tag,
             ),
@@ -77,7 +95,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
     }
 
     isTerminal(): boolean {
-        return equals(this.tail, textBoundary)
+        return equals(this.tail, this.textBoundary)
     }
 
     terminalToken(): PosTaggedToken {

@@ -1,6 +1,7 @@
 import {test, expect, equals, is} from "@benchristel/taste"
 import {PosTaggedState, PosTaggedToken, tokenizeWithPosTags} from "./pos-tagged-state.js"
 import {testBehavesLikeState} from "./state-contract-tests.js"
+import {errorThrownFrom} from "../../errors.js"
 
 testBehavesLikeState(PosTaggedState)
 
@@ -20,6 +21,48 @@ test("PosTaggedState", {
         const state = new PosTaggedState()
         state.update(new PosTaggedToken(",", "PUNCT"))
         expect(state.value(), endsWith, ":,")
+    },
+
+    "rejects an order of zero"() {
+        expect(
+            errorThrownFrom(() => new PosTaggedState({order: 0})),
+            equals,
+            Error("Invariant failed: order must be greater than zero"),
+        )
+    },
+
+    "accepts an order of one"() {
+        // Shouldn't throw
+        new PosTaggedState({order: 1})
+    },
+
+    "rejects literalTokensInContext greater than order"() {
+        expect(
+            errorThrownFrom(() =>
+                new PosTaggedState({
+                    order: 1,
+                    literalTokensInContext: 2,
+                }),
+            ),
+            equals,
+            Error("Invariant failed: literalTokensInContext must not be greater than order"),
+        )
+    },
+
+    "rejects fractional order"() {
+        expect(
+            errorThrownFrom(() => new PosTaggedState({order: 1.1})),
+            equals,
+            Error("Invariant failed: order must be an integer"),
+        )
+    },
+
+    "rejects fractional literalTokensInContext"() {
+        expect(
+            errorThrownFrom(() => new PosTaggedState({literalTokensInContext: 1.1})),
+            equals,
+            Error("Invariant failed: literalTokensInContext must be an integer"),
+        )
     },
 })
 
