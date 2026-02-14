@@ -5,7 +5,7 @@ const END = ""
 export class Order1State implements State<string> {
     token = END
 
-    value(): string {
+    context(): string {
         return this.token
     }
 

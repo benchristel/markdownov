@@ -14,13 +14,13 @@ test("PosTaggedState", {
         state.update(new PosTaggedToken("not", "NEG"))
         state.update(new PosTaggedToken("order", "V"))
         state.update(new PosTaggedToken("beer", "N"))
-        expect(state.value(), endsWith, "DET:N:VPST:NEG:order:beer")
+        expect(state.context(), endsWith, "DET:N:VPST:NEG:order:beer")
     },
 
     "does not use POS tags for punctuation"() {
         const state = new PosTaggedState()
         state.update(new PosTaggedToken(",", "PUNCT"))
-        expect(state.value(), endsWith, ":,")
+        expect(state.context(), endsWith, ":,")
     },
 
     "rejects an order of zero"() {

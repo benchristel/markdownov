@@ -67,8 +67,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
         this.tail = [...this.textBoundary]
     }
 
-    // TODO: rename value() to context()
-    value(): string {
+    context(): string {
         const unmatchedDelims = this.delimiterStack.getDelimiters()
         const id = [
             unmatchedDelims.join(","),

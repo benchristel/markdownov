@@ -7,11 +7,12 @@ export class Transitions<TokenT extends Token> {
     constructor(private readonly rng: () => number) { }
 
     record(from: State<TokenT>, to: TokenT): void {
-        (this.storage[from.value()] ??= []).push(to)
+        (this.storage[from.context()] ??= []).push(to)
     }
 
     predictFrom(state: State<TokenT>): TokenT {
-        return pick(this.rng, this.storage[state.value()] ?? []) ?? state.terminalToken()
+        return pick(this.rng, this.storage[state.context()] ?? [])
+            ?? state.terminalToken()
     }
 
     possibilities(stateId: string): TokenT[] {
