@@ -20,9 +20,9 @@ function main() {
         .then(() => console.log(model.generate()))
         .then(() => t2 = +new Date())
         .then(() => {
-            console.log(model.stats())
-            console.log("Training:", t1 - t0, "ms")
-            console.log("Generating:", t2 - t1, "ms")
+            console.error(model.stats())
+            console.error("Training:", t1 - t0, "ms")
+            console.error("Generating:", t2 - t1, "ms")
         })
         .catch(console.error)
 }
