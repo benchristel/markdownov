@@ -29,6 +29,10 @@ export class MarkovModel<TokenT extends Token> {
         return [...take(limit, this.generateTokens())].join("")
     }
 
+    stats(): any {
+        return this.transitions.stats()
+    }
+
     private *generateTokens(): Generator<TokenT, void, undefined> {
         let state = this.initialState()
         do {

@@ -12,8 +12,18 @@ async function trainOn(path: string): Promise<void> {
 }
 
 function main() {
+    const t0 = +new Date()
+    let t1: number
+    let t2: number
     return Promise.all(paths.map(trainOn))
+        .then(() => t1 = +new Date())
         .then(() => console.log(model.generate()))
+        .then(() => t2 = +new Date())
+        .then(() => {
+            console.log(model.stats())
+            console.log("Training:", t1 - t0, "ms")
+            console.log("Generating:", t2 - t1, "ms")
+        })
         .catch(console.error)
 }
 

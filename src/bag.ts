@@ -29,4 +29,8 @@ export class Bag<T> {
             }
         }
     }
+
+    countUnique(): number {
+        return this.contents.length
+    }
 }

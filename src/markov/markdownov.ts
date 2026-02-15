@@ -28,4 +28,8 @@ export class Markdownov {
     generate(maxTokens: number = 100_000): string {
         return this.model.generate(maxTokens)
     }
+
+    stats(): any {
+        return this.model.stats()
+    }
 }

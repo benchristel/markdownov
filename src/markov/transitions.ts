@@ -15,4 +15,17 @@ export class Transitions<TokenT extends Token> {
         return this.storage[state.context()]?.pick(this.rng())
             ?? state.terminalToken()
     }
+
+    stats(): any {
+        const histogram: number[] = []
+        for (const bag of Object.values(this.storage)) {
+            if (!bag) continue
+            histogram[bag.countUnique()] ??= 0
+            histogram[bag.countUnique()]++
+        }
+        return {
+            states: Object.keys(this.storage).length,
+            histogram: histogram.slice(1, 20),
+        }
+    }
 }
