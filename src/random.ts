@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant"
 import * as Hash from "./hash.js"
 
 export function seedRandom(seed: string): () => number {
@@ -15,5 +16,11 @@ export function seedRandom(seed: string): () => number {
 }
 
 export function pick<T>(rng: () => number, array: T[]): T | undefined {
-    return array[Math.floor(rng() * array.length)]
+    return pickAtPosition(rng(), array)
+}
+
+export function pickAtPosition<T>(position: number, array: T[]): T | undefined {
+    invariant(position >= 0, "pickAtPosition(): position must be >= 0")
+    invariant(position < 1, "pickAtPosition(): position must be less than 1")
+    return array[Math.floor(position * array.length)]
 }
