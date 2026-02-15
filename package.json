@@ -1,6 +1,6 @@
 {
   "name": "markdownov",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Markdown-aware Markov model for text generation",
   "main": "dist/index.js",
   "type": "module",
